@@ -13,7 +13,7 @@
  * Example of usage of this higher-order function:
  * Invoking `processFirstItem` passing `['foo', 'bar']` and `(str) => str + str`,
  * should return 'foofoo'.
-*/
+ */
 function processFirstItem(stringList, callback) {
   return callback(stringList[0])
 }
@@ -47,9 +47,9 @@ function processFirstItem(stringList, callback) {
  * 
  * [2] Invoking `processLength` passing `[]` and `(num) => "There are " + num`,
  * should return "There are 0".
-*/
-function processLength(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function processLength(list, callback) {
+  return callback(list.length);
 }
 
 /**
@@ -65,9 +65,9 @@ function processLength(/* CODE HERE */) {
  * Example of usage of this higher-order function:
  * Invoking `processLastItem` passing `['foo', 'bar']` and `(str) => str + str`,
  * should return 'barbar'.
-*/
-function processLastItem(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function processLastItem(stringList, callback) {
+  return callback(stringList[1])
 }
 
 /**
@@ -86,9 +86,9 @@ function processLastItem(/* CODE HERE */) {
  * 
  * [2] Invoking `processSum` passing `[]` and `(num) => num + 1000`,
  * should return 1000.
-*/
-function processSum(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function processSum(numberList, callback) {
+  return callback(numberList.reduce((a, b) => a + b, 0))
 }
 
 /**
@@ -108,9 +108,9 @@ function processSum(/* CODE HERE */) {
  * 
  * [2] Invoking `processProduct` passing 25 and 0 and `(num) => num + 1000`,
  * should return 1000.
-*/
-function processProduct(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function processProduct(num1, num2, callback) {
+  return callback(num1 * num2)
 }
 
 /**
@@ -132,9 +132,9 @@ function processProduct(/* CODE HERE */) {
  * [2] Invoking `processContains` passing
  * "lady gaga" and `['foo', 'bar']` and `(bool) => bool ? 'nice!' : 'sad'`,
  * should return "sad".
-*/
-function processContains(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function processContains(item, list, callback) {
+  return callback(list.includes(item));
 }
 
 /**
@@ -155,9 +155,11 @@ function processContains(/* CODE HERE */) {
  * 
  * [2] Invoking `processDuplicateFree` passing `[1,1,2,2,3]` and `(arr) => arr.length`,
  * should return 3.
-*/
-function processDuplicateFree(/* CODE HERE ONLY AFTER COMPLETING ALL OTHER TASKS */) {
-  /* CODE HERE ONLY AFTER COMPLETING ALL OTHER TASKS */
+ */
+function processDuplicateFree(list, callback) {
+  return callback(list).filter(function (item, pos) {
+    return list.indexOf(item) == pos;
+  });
 }
 
 /////////////// HIGHER-ORDER ARRAY METHODS ///////////////
@@ -177,9 +179,14 @@ function processDuplicateFree(/* CODE HERE ONLY AFTER COMPLETING ALL OTHER TASKS
  * @param runners array of runners like the one inside the /data/runners.js file.
  * @returns an array with all the runners' full names in the following format: "Smith, John".
  * The full names appear in the array in the same order the runners appear in the `runners` array.
-*/
-function getFullNames(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function getFullNames(runners) {
+  const names = [];
+  runners.forEach(function (item) {
+    let runnerNames = item.last_name + ", " + item.first_name;
+    names.push(runnerNames);
+  })
+  return names;
 }
 
 /**
@@ -193,9 +200,12 @@ function getFullNames(/* CODE HERE */) {
  * @param runners array of runners like the one inside the /data/runners.js file.
  * @returns an array with all the runners' first names in ALL CAPS.
  * The first names appear in the array in the same order the runners appear in the `runners` array.
-*/
-function firstNamesAllCaps(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function firstNamesAllCaps(runners) {
+  let allCap = runners.map((name) => {
+    return name.first_name.toUpperCase();
+  })
+  return allCap;
 }
 
 /**
@@ -210,10 +220,14 @@ function firstNamesAllCaps(/* CODE HERE */) {
  * @param tShirtSize string (possible values are "S", "M", "L", "XL", "2XL", "3XL").
  * @returns an array containing only the runners that use the given `tShirtSize`.
  * The runners in the array appear in the same order they appear in the `runners` array.
-*/
-function getRunnersByTShirtSize(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function getRunnersByTShirtSize(runners, tShirtSize) {
+  const runnerShirt = runners.filter((shirt) => {
+    return shirt.shirt_size == tShirtSize;
+  })
+  return runnerShirt;
 }
+
 
 /**
  * ### Challenge `tallyUpDonations`
@@ -224,9 +238,12 @@ function getRunnersByTShirtSize(/* CODE HERE */) {
  * 
  * @param runners array of runners like the one inside the /data/runners.js file.
  * @returns a number which is the sum of the donations by all runners.
-*/
-function tallyUpDonations(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function tallyUpDonations(runners) {
+  let tally = runners.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue.donation;
+  }, 0)
+  return tally;
 }
 
 /////////////// CLOSURES ///////////////
@@ -244,15 +261,19 @@ function tallyUpDonations(/* CODE HERE */) {
  * counter() // should return 1
  * counter() // should return 2
  * etc
-*/
+ */
 function counterMaker() {
-  // BROKEN CODE STARTS
-  const count = 0;
-  function counter() {
-    ++count
+  let count = 0;
+  return function counter() {
+    return count++
   }
-  // BROKEN CODE ENDS
-}
+};
+
+const newCounter = counterMaker();
+newCounter();
+newCounter();
+newCounter();
+
 
 /**
  * ### Challenge `counterMakerWithLimit`
@@ -273,10 +294,17 @@ function counterMaker() {
  * counter() // should return 3
  * counter() // should return 0
  * etc
-*/
-function counterMakerWithLimit(/* CODE HERE */) {
-  /* CODE HERE */
+ */
+function counterMakerWithLimit(max) {
+  let count = -1;
+  return function counter() {
+    if (count === max) {
+      count = -1;
+    }
+    return ++count;
+  }
 }
+
 
 /////////////// END OF CHALLENGE ///////////////
 /////////////// END OF CHALLENGE ///////////////
@@ -286,17 +314,43 @@ if (typeof exports !== 'undefined') {
   // IGNORE: Test/Env Detected
   // For Node/Non-browser test env
   module.exports = module.exports || {}
-  if (processFirstItem) { module.exports.processFirstItem = processFirstItem }
-  if (processLength) { module.exports.processLength = processLength }
-  if (processLastItem) { module.exports.processLastItem = processLastItem }
-  if (processSum) { module.exports.processSum = processSum }
-  if (processProduct) { module.exports.processProduct = processProduct }
-  if (processContains) { module.exports.processContains = processContains }
-  if (processDuplicateFree) { module.exports.processDuplicateFree = processDuplicateFree }
-  if (getFullNames) { module.exports.getFullNames = getFullNames }
-  if (firstNamesAllCaps) { module.exports.firstNamesAllCaps = firstNamesAllCaps }
-  if (getRunnersByTShirtSize) { module.exports.getRunnersByTShirtSize = getRunnersByTShirtSize }
-  if (tallyUpDonations) { module.exports.tallyUpDonations = tallyUpDonations }
-  if (counterMaker) { module.exports.counterMaker = counterMaker }
-  if (counterMakerWithLimit) { module.exports.counterMakerWithLimit = counterMakerWithLimit }
+  if (processFirstItem) {
+    module.exports.processFirstItem = processFirstItem
+  }
+  if (processLength) {
+    module.exports.processLength = processLength
+  }
+  if (processLastItem) {
+    module.exports.processLastItem = processLastItem
+  }
+  if (processSum) {
+    module.exports.processSum = processSum
+  }
+  if (processProduct) {
+    module.exports.processProduct = processProduct
+  }
+  if (processContains) {
+    module.exports.processContains = processContains
+  }
+  if (processDuplicateFree) {
+    module.exports.processDuplicateFree = processDuplicateFree
+  }
+  if (getFullNames) {
+    module.exports.getFullNames = getFullNames
+  }
+  if (firstNamesAllCaps) {
+    module.exports.firstNamesAllCaps = firstNamesAllCaps
+  }
+  if (getRunnersByTShirtSize) {
+    module.exports.getRunnersByTShirtSize = getRunnersByTShirtSize
+  }
+  if (tallyUpDonations) {
+    module.exports.tallyUpDonations = tallyUpDonations
+  }
+  if (counterMaker) {
+    module.exports.counterMaker = counterMaker
+  }
+  if (counterMakerWithLimit) {
+    module.exports.counterMakerWithLimit = counterMakerWithLimit
+  }
 }
